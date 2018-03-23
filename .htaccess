@@ -1,0 +1,63 @@
+##  Can be commented out if causes errors, see notes above.
+Options +FollowSymLinks
+
+
+AddType image/svg+xml svg svgz
+AddEncoding gzip svgz
+
+<IfModule mod_deflate.c>
+	<IfModule mod_headers.c>
+		Header append Vary User-Agent env=!dont-vary
+	</IfModule>
+		AddOutputFilterByType DEFLATE text/css text/x-component application/x-javascript application/javascript text/javascript text/x-js text/html text/richtext image/svg+xml text/plain text/xsd text/xsl text/xml image/x-icon application/json
+	<IfModule mod_mime.c>
+		# DEFLATE by extension
+		AddOutputFilter DEFLATE js css htm html xml
+	</IfModule>
+</IfModule>
+
+
+#
+#  mod_rewrite in use
+
+RewriteEngine On
+
+
+#<IfModule mod_mime.c>
+#AddEncoding gzip .gz 
+#</IfModule>
+
+
+RewriteBase /
+ 
+RewriteCond %{HTTPS} =off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
+
+## PHP INI settings
+<FilesMatch "\.(jpg|png|gif|js|css|ico)$">
+        <IfModule mod_headers.c>
+                Header set ETag ""
+                Header set Cache-Control "max-age=2592000"
+                Header set Expires "01 Jan 2112 00:00:00 GMT"
+        </IfModule>
+</FilesMatch>
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 seconds"
+    ExpiresByType image/x-icon "access plus 2692000 seconds"
+    ExpiresByType image/jpeg "access plus 2692000 seconds"
+    ExpiresByType image/png "access plus 2692000 seconds"
+    ExpiresByType image/gif "access plus 2692000 seconds"
+    ExpiresByType application/x-shockwave-flash "access plus 2692000 seconds"
+    ExpiresByType text/css "access plus 2692000 seconds"
+    ExpiresByType text/javascript "access plus 2692000 seconds"
+    ExpiresByType application/x-javascript "access plus 2692000 seconds"
+</IfModule>
+<IfModule mod_headers.c>
+    <FilesMatch "\.(bmp|css|flv|gif|ico|jpg|jpeg|js|pdf|png|svg|tif|tiff)$">
+        Header set Last-Modified "Tue, 31 Aug 2010 00:00:00 GMT"
+    </FilesMatch>
+</IfModule>

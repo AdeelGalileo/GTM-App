@@ -1,0 +1,1 @@
+{if $outputArray}{$outputArray}{/if}

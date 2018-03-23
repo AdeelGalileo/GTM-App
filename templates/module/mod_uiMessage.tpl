@@ -1,0 +1,1 @@
+{if $message}{$message}{/if}
